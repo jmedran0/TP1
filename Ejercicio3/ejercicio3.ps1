@@ -74,8 +74,8 @@ if ($existeArchivo -eq $true) {
             } While ($opcion -ne 'S' -and $opcion -ne 'N')
         }
         
-        # Leemos el contenido en grupos de 4 lineas, que conform
-        $registros = Get-Content $archivo -ReadCount 4        
+        # Leemos el contenido en grupos de 4 lineas, que conforman una fila
+        $registros = Get-Content $archivo -ReadCount 4
         foreach($registro in $registros) {
 
             # Creamos el hash table para almacenar los pares key=Value
@@ -104,9 +104,9 @@ if ($existeArchivo -eq $true) {
         }
        
     } else {
-        Write-Error ("**** El directorio `"" + $directorioDeSalida + "`" no existe no existe. *****")
+        Write-Error ("**** El directorio `"$directorioDeSalida`" no existe no existe. *****")
     }
 } else {
-    Write-Error ("**** El archivo `"" + $archivo + "`" no existe. *****")
+    Write-Error ("**** El archivo `"$archivo`" no existe. *****")
 }
 
