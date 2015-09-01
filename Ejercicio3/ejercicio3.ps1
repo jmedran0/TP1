@@ -9,7 +9,7 @@
 
 <#  
     .SYNOPSIS 
-      Lee el contenido del archivo de texto -archivo con el en formato:
+      Lee el contenido del archivo de texto [-archivo] con el en formato:
         campo1=valor1
         campo2=valor2
         campo3=valor3
@@ -18,7 +18,7 @@
         campo2=valor5
         campo3=valor6
 
-      y lo exporta a un archivo CSV en el directorio -directorioDeSalida proporcionado. 
+      y lo exporta a un archivo CSV en el directorio [-directorioDeSalida] proporcionado.
        
     .EXAMPLE
      .\ejercicio3.ps1 .\backup.txt .\
@@ -58,13 +58,17 @@ if ($existeArchivo -eq $true) {
                 $opcion = Read-Host "Desea Continuar? S/N"
                 $opcion = $opcion.ToUpper()
                 
-                if ($opcion -eq 'S') {
-                    # Borramos y seguimos adelante.
-                    rm -Path $archivoDeSalida -Force 
-                } else {
-                    # Abortamos el proceso.
-                    Write-Host "Exportación cancelada por el usuario."
-                    exit
+                switch ($opcion) {
+
+                   'S' {
+                        # Borramos y seguimos adelante.
+                        rm -Path $archivoDeSalida -Force
+                    }
+                   'N' {
+                        # Abortamos el proceso.
+                        Write-Host "Exportación cancelada por el usuario."
+                        exit
+                    }
                 }
 
             } While ($opcion -ne 'S' -and $opcion -ne 'N')
@@ -79,7 +83,7 @@ if ($existeArchivo -eq $true) {
             
             # Agregamos cada campo al registro que va a ser exportado
             foreach($campo in $registro) {
-            
+
                 # Evitamos las lineas vacias y con '***' 
                 if ($campo -notmatch "[*][*][*]" -and $campo -ne "") {                  
                     
