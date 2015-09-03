@@ -78,15 +78,14 @@ Process {
 
     # Procesamos.
 
-    # Separamos las palabras por cualquiera de los caracteres indicados.
-    $words = $contenido.Split(" ,.;:?(){}[]\/|@<>!@#$%^&*_+-=~")
+    # Separamos las palabras por cualquiera de los caracteres indicados. Si no hay texto 
+    # entre dos caracteres delimitadores, la palabra puede quedar vacia. La opcionde split
+    # RemoveEmptyEntries las elimina del resultado
+    $words = $contenido.Split(" ,.;:?(){}[]\/|@<>!@#$%^&*_+-=~", [System.StringSplitOptions]::RemoveEmptyEntries)
     
     foreach($word in $words) {
-        
-        # Si no hay texto entre dos caracteres, la palabra puede quedar vacia. La ignoro.
-        if ($word -ne "") {   
-            $contador[$word] += 1
-        }  
+
+        $contador[$word] += 1
     }
 }
 
