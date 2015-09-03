@@ -1,79 +1,107 @@
-# Nombre Del Script: 
-# Trabajo Práctico Nro.: 
-# Ejercicio Nro.: 
-# Entrega: 
-# Integrantes: APELLIDOS, nombres, DNI
-#    @integrante1
-#    @integrante2
-# Descripción:
+﻿######################################################
+# Script: 	 	ejer2.ps1
+# TP:     	 	1
+# Ejercicio: 	2
+# Integrantes:	
+#   Morganella Julian    35.538.469
+#   Medrano Jonatan      33.557.962
+#    
+#   
+# PRIMER REENTREGA
+######################################################
 
-<#  
-    .SYNOPSIS 
-      Copia los archivos de la ruta [-origen] que contienen el texto especificado
-      en [-cadena] al direcorio destino especificado en [-destino] 
-       
-    .EXAMPLE
-     .\ejercicio2.ps1 "Texto a buscar" -origen .\Pepe -destino .\Pepito
+<#
+.SYNOPSIS 
+Este script copia a un directorio todos los archivos de texto que contengan una cadena determinada. 
+
+.DESCRIPTION
+Este script realiza un script que copia a un directorio todos los archivos de texto que contengan una cadena determinada. Debe recibir por parámetro la cadena a buscar, el directorio de origen y el de destino.
+Además, genera un archivo log.txt dentro de la carpeta destino, mostrando una tabla con directorio de origen, tamaño y fecha de modificacion. 
+    
+.PARAMETER cadena
+Palabra o nombre del archivo a buscar.
+
+.PARAMETER pathorigen
+Path del directorio origen.
+
+.PARAMETER pathdestino
+Path del directorio salida.
+
+.EXAMPLE
+.\Ejer2-TP1.ps1 "PowerShell" c:\ ./carpetadestino
+.\Ejer2-TP1.ps1 procesos ./carpetaorigen ./carpetadestino
+.\Ejer2-TP1.ps1 
+                     
 #>
 
-Param(
-    [Parameter(Position = 1, Mandatory = $true)]
-    [ValidateNotNullOrEmpty()][String]$cadena,
+Param(  [Parameter(Mandatory=$true,position=0)] 
+        [ValidateNotNullOrEmpty()]
+        [string]$cadena,
 
-    [Parameter(Position = 2, Mandatory = $true)]
-    [ValidateLength(1, 260)][String]$origen,
-    
-    [Parameter(Position = 3, Mandatory = $true)]
-    [ValidateLength(1, 260)][String]$destino = ".\"
-)
+        [Parameter(Mandatory=$true,position=1)] 
+        [ValidateNotNullOrEmpty()]
+        [string]$path_origen,
 
-# Validamos la existencia del directorio origen.
-$existeOrigen = Test-Path -Path $origen -PathType container
+        [Parameter(Mandatory=$true,position=2)]
+        [ValidateNotNullOrEmpty()]
+        [string]$path_destino
+    )
 
-if ($existeOrigen -eq $true) {
-    
-    # TODO: chequear permisos sobre destino.
-     
-    # Definimos el nombre del archivo de logs.
-    $archivoDeLogs = $Origen + '\logs.txt'
-
-    # Get-ChildItem: Obtenemos los archivos de origen de forma recursiva,
-    # Select-String: Seleccionamos solo aquellos que contengan la cadena buscada,
-    # Resolve-Path: Nos aseguramos de quedarnos con el path completo de cada objeto devuelto, sin la informacion adicional.
-    $listaDeArchivos = (Get-ChildItem -Path $origen -Recurse | Select-String -pattern $cadena -list | Resolve-Path)
-
-    # Para cada archivo..
-    foreach ($archivo in $listaDeArchivos) {
-      
-       # Split-Path: obtenemos la carpeta de padre del archivo de origen.
-       $ubicacionDelArchivoEnOrigen = Split-Path $archivo -Parent                   
-       
-       # Obtenemos el path absoluto del origen. De '.\origen' obtengo 'C:\Users\Pepe\Origen'
-       $origenAbsoluto = Resolve-Path $origen
-
-       # Para usar la ruta en el replace, reemplazamos la barra simple por una doble y nos queda 'C:\\Users\\Pepe\\Origen' 
-       $pattern = $origenAbsoluto -replace "\\",'\\'
-
-       # Reemplazamos la raiz de la ruta origen por la ruta destino, u obtenemos la ubicacion en el destino.
-       $ubicacionDelArchivoEnDestino = $ubicacionDelArchivoEnOrigen -replace $pattern, $destino 
-
-       # Intentamos crear la ruta de destino para el archivo que vamos a copiar.
-       mkdir $ubicacionDelArchivoEnDestino -Force *> $null
-        
-       # Ahora copiamos el archivo en la punta de la rama creada.
-       Copy-Item $archivo -Destination $ubicacionDelArchivoEnDestino -Force
-
-       # TODO: Generar logs. 
-       <#
-       $log = ($Archivo | Get-Item | Format-Table -autosize -HideTableHeaders -Property LastWriteTime, Length, Name)
-
-       $log = $ubicacionDelArchivoEnOrigen + $log
-
-       $log | Out-File $archivoDeLogs -Append
-       #>
-    }
-    
-} else {
-    Write-Error "El directorio de origen no existe".
+        #valido cantidad de parametros // Aunque ya esta validado anteriormente con el "Mandatory=$true"
+if($PSBoundParameters.Count -ne 3)
+{
+    Write-Host "La cantidad de parametros ingresada es incorrecta"
+	exit
 }
 
+#Valido que el path sea correcto
+$valido_path=Test-Path -Path "$path_origen"
+
+#Valido que el path_origen sea correcto
+if( $valido_path -eq $true )
+{
+$path_origen=Resolve-Path -Path $path_origen
+}
+else{
+    Write-Host "El path de Origen ingresado es incorrecto."
+	exit
+}
+
+
+#Valido que el path sea correcto
+$valido_ruta=Test-Path -Path "$path_destino"
+
+#Valido que el path_destino sea correcto
+if( $valido_ruta -eq $true )
+{
+$path_destino=Resolve-Path -Path $path_destino  #Convierto el path a absoluto.
+}
+else{
+    Write-Host "El path de destino ingresado es incorrecto."
+	exit
+}
+
+    $existe = Test-Path $path_destino/log.txt
+    
+    #crea un archivo de log nuevo cada vez que se ejecuta el script, sin borrar peticiones anteriores. 
+    while($existe -eq $true)  
+    {
+        $num++
+        $existe = Test-Path $path_destino/log$num.txt
+
+    }
+    $pathlog="$path_destino/log$num.txt"
+
+   
+
+#En forma recursiva el directorio "path_origen" 
+$objeto_arch = Get-ChildItem -Path "$path_origen" -File -Recurse | Where-Object Name -CMatch "$cadena"         #Busco todos los archivos que esten dentro de $path_origen, y selecciono solo los que el nombre contengan a $cadena, discrimina mayusculas y minusculas por eso uso el Cmatch.
+
+foreach($archivo in $objeto_arch){
+        #Copia de los archivos en la carpeta de destino
+        Copy-Item -LiteralPath $archivo.FullName -Destination "$path_destino" -Force
+}
+
+
+  #Creo un log en formato de tabla, segun los datos de los archivos copiados.
+    $objeto_arch|Format-Table -AutoSize  @{Label="Path"; Expression={($_.FullName)}},@{Label='Tamaño[Byte]'; Expression={($_.Length)}}, @{Label="Ultima Modificación"; Expression={($_.LastWriteTime)}} | Out-File -FilePath $pathlog
