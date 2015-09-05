@@ -1,11 +1,18 @@
-# Nombre Del Script: 
-# Trabajo Práctico Nro.: 
-# Ejercicio Nro.: 
-# Entrega: 
-# Integrantes: APELLIDOS, nombres, DNI
-#    @integrante1
-#    @integrante2
-# Descripción:
+#**************************************************************************************************
+# Nombre Del Script:		ejercicio4.ps1
+# Trabajo Pr�ctico Nro.:	1
+# Ejercicio Nro.:			4
+# Entrega Nro:				ENTREGA
+# Integrantes:
+#
+#	APELLIDOS		NOMBRES			DNI
+#   ------------------------------------------
+#	@integrante1
+#	@integrante2
+#	@integrante3
+#	@integrante4
+#
+#**************************************************************************************************
 
 <#  
     .SYNOPSIS
@@ -94,6 +101,4 @@ End {
     $contador | Format-Table -AutoSize -Property @{Expression={$_.Name};Label="Palabra"}, @{Expression={$_.value};Label="Cantidad"} 
 }
 
-
-
-
+#EOF

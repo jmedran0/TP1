@@ -1,17 +1,18 @@
-﻿######################################################
-# Script: 	 	ejer5.ps1
-# TP:     	 	1
-# Ejercicio: 	5
-# Integrantes:	
-#   Gomez Gonzalez Lucas    33.192.211
-#   Medrano Jonatan         33.557.962
-#   Morganella Julian       35.538.469
-#   Ariel                   XXXXXXXXXX
-#   Bruno                   XXXXXXXXXX
-#   
-# ENTREGA
-######################################################
-
+﻿#**************************************************************************************************
+# Nombre Del Script:		ejercicio5.ps1
+# Trabajo Práctico Nro.:	1
+# Ejercicio Nro.:			5
+# Entrega Nro:				ENTREGA
+# Integrantes:
+#
+#	APELLIDOS		NOMBRES			DNI
+#   ------------------------------------------
+#	@integrante1
+#	@integrante2
+#	@integrante3
+#	@integrante4
+#
+#**************************************************************************************************
 
 <#
 .SYNOPSIS 
@@ -125,3 +126,5 @@ if($cantArchivos -gt 3)
 		Remove-Item $pathCompleto
 	}
 }
+
+#EOF

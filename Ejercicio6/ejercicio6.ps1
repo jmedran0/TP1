@@ -1,17 +1,18 @@
-﻿######################################################
-# Script: 	 	Ejer6.ps1
-# TP:     	 	1
-# Ejercicio: 	6
-# Integrantes:	
+﻿#**************************************************************************************************
+# Nombre Del Script:		ejercicio6.ps1
+# Trabajo Práctico Nro.:	1
+# Ejercicio Nro.:			6
+# Entrega Nro:				ENTREGA
+# Integrantes:
 #
-#   Gomez Gonzalez Lucas    33.192.211
-#   Medrano Jonatan         33.557.962
-#   Morganella Julian       35.538.469
-#   Ariel                   XXXXXXXXXX
-#   Bruno                   XXXXXXXXXX
-#   
-# ENTREGA
-######################################################
+#	APELLIDOS		NOMBRES			DNI
+#   ------------------------------------------
+#	@integrante1
+#	@integrante2
+#	@integrante3
+#	@integrante4
+#
+#**************************************************************************************************
 
 <#
 .SYNOPSIS 
@@ -55,3 +56,5 @@ Write-Host "Sistema Operativo  : " $NameSO.Caption
 Write-Host "CSDVersion         : " $ServicePackSO.CSDVersion
 Write-Host "Version            : " $VersionSO.Version
 $PlacasRed | Format-Table -AutoSize  @{Label="Placas de Red"; Expression={($_.Name)}}
+
+#EOF

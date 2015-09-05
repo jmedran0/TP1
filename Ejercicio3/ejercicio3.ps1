@@ -1,13 +1,20 @@
-﻿# Nombre Del Script: 
-# Trabajo Práctico Nro.: 
-# Ejercicio Nro.: 
-# Entrega: 
-# Integrantes: APELLIDOS, nombres, DNI
-#    @integrante1
-#    @integrante2
-# Descripción
+﻿#**************************************************************************************************
+# Nombre Del Script:		ejercicio3.ps1
+# Trabajo Práctico Nro.:	1
+# Ejercicio Nro.:			3
+# Entrega Nro:				ENTREGA
+# Integrantes:
+#
+#	APELLIDOS		NOMBRES			DNI
+#   ------------------------------------------
+#	@integrante1
+#	@integrante2
+#	@integrante3
+#	@integrante4
+#
+#**************************************************************************************************
 
-<#  
+<#
     .SYNOPSIS 
       Lee el contenido del archivo de texto [-archivo] con el en formato:
         campo1=valor1
@@ -110,3 +117,4 @@ if ($existeArchivo -eq $true) {
     Write-Error ("**** El archivo `"$archivo`" no existe. *****")
 }
 
+#EOF

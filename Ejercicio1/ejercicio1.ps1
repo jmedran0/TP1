@@ -1,14 +1,18 @@
-﻿######################################################
-# Script: 	 	ejer2.ps1
-# TP:     	 	1
-# Ejercicio: 	2
-# Integrantes:	
-#   Morganella Julian    35.538.469
-#   Medrano Jonatan      33.557.962
-#    
-#   
-# PRIMER REENTREGA
-######################################################
+﻿#**************************************************************************************************
+# Nombre Del Script:		ejercicio1.ps1
+# Trabajo Práctico Nro.:	1
+# Ejercicio Nro.:			1
+# Entrega Nro:				ENTREGA
+# Integrantes:
+#
+#	APELLIDOS		NOMBRES			DNI
+#   ------------------------------------------
+#	@integrante1
+#	@integrante2
+#	@integrante3
+#	@integrante4
+#
+#**************************************************************************************************
 
 <#
 .SYNOPSIS 
@@ -123,3 +127,5 @@ else
     Write-Host $listaproceso[$i].Name - $listaproceso[$i].Id     
     }
 }
+
+#EOF

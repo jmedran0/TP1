@@ -1,14 +1,18 @@
-﻿######################################################
-# Script: 	 	ejer2.ps1
-# TP:     	 	1
-# Ejercicio: 	2
-# Integrantes:	
-#   Morganella Julian    35.538.469
-#   Medrano Jonatan      33.557.962
-#    
-#   
-# PRIMER REENTREGA
-######################################################
+﻿#**************************************************************************************************
+# Nombre Del Script:		ejercicio2.ps1
+# Trabajo Práctico Nro.:	1
+# Ejercicio Nro.:			2
+# Entrega Nro:				ENTREGA
+# Integrantes:
+#
+#	APELLIDOS		NOMBRES			DNI
+#   ------------------------------------------
+#	@integrante1
+#	@integrante2
+#	@integrante3
+#	@integrante4
+#
+#**************************************************************************************************
 
 <#
 .SYNOPSIS 
@@ -105,3 +109,5 @@ foreach($archivo in $objeto_arch){
 
   #Creo un log en formato de tabla, segun los datos de los archivos copiados.
     $objeto_arch|Format-Table -AutoSize  @{Label="Path"; Expression={($_.FullName)}},@{Label='Tamaño[Byte]'; Expression={($_.Length)}}, @{Label="Ultima Modificación"; Expression={($_.LastWriteTime)}} | Out-File -FilePath $pathlog
+
+#EOF
