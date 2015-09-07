@@ -88,7 +88,7 @@ Process {
     # Separamos las palabras por cualquiera de los caracteres indicados. Si no hay texto 
     # entre dos caracteres delimitadores, la palabra puede quedar vacia. La opcionde split
     # RemoveEmptyEntries las elimina del resultado
-    $words = $contenido.Split(" ,.;:?(){}[]\/|@<>!@#$%^&*_+-=~", [System.StringSplitOptions]::RemoveEmptyEntries)
+    $words = $contenido.Split(" ,.;:?(){}[]\/|@<>!#$%^&*_+-=~`"`n'´", [System.StringSplitOptions]::RemoveEmptyEntries)
     
     foreach($word in $words) {
 
@@ -98,7 +98,7 @@ Process {
 
 End {
     # Mostramos las cantidades en formato tabla y customizamos los nombres de las columnas.
-    $contador | Format-Table -AutoSize -Property @{Expression={$_.Name};Label="Palabra"}, @{Expression={$_.value};Label="Cantidad"} 
+    $contador.GetEnumerator() | Sort-Object -Property Key | Format-Table -AutoSize -Property @{Expression={$_.Name};Label="Palabra"}, @{Expression={$_.value};Label="Cantidad"} 
 }
 
 #EOF
