@@ -1,0 +1,186 @@
+#**************************************************************************************************
+# Nombre Del Script: ejercicio7.ps1
+# Trabajo Práctico Nro.: 1
+# Ejercicio Nro.: 7
+# Entrega Nro: ENTREGA
+# Integrantes:
+#
+# APELLIDOS NOMBRES DNI
+#   ------------------------------------------
+# @integrante1
+# @integrante2
+# @integrante3
+# @integrante4
+#
+#**************************************************************************************************
+
+<#
+.SYNOPSIS
+El siguiente script analiza la estructura de una matriz y determina de que tipo es.
+
+.DESCRIPTION
+Este script analiza la estructura de una matriz cargada desde un archivo y determina el tipo de 
+la misma. Ademas recibe por parametro el caracter que indica la separacion de columnas
+dentro del archivo.
+   
+.PARAMETER matriz
+Archivo que contienen la matriz a analizar
+
+.PARAMETER separador
+Caracter que determina la separacion de las columnas de la matriz dentro del archivo
+
+.EXAMPLE
+.\Ejercicio7.ps1 .\matriz.txt ";"
+
+.EXAMPLE
+.\Ejercicio7.ps1 .\matriz.txt " "
+                   
+#>
+
+Param(  [Parameter(Mandatory=$true)]
+       [ValidateNotNullOrEmpty()]
+       [string]$matriz,
+
+       [Parameter(Mandatory=$true)]
+       [ValidateNotNullOrEmpty()]
+       [string]$separador
+     )
+
+#valido cantidad de parametros // Aunque ya esta validado anteriormente con el "Mandatory=$true"
+if($PSBoundParameters.Count -ne 2)
+{
+   Write-Host "La cantidad de parametros ingresada es incorrecta"
+exit
+}
+
+#Valido que el path sea correcto
+$valido_path=Test-Path -Path "$matriz"
+
+if( $valido_path -eq $true )
+{
+   $path_matriz=Resolve-Path -Path $matriz
+}
+else
+{
+   Write-Host "El path de la matriz ingresado es incorrecto."
+exit
+}
+
+#Valido que el separador de columna sea un solo caracter.
+
+###############################################################
+#     FALTA VALIDAR SI EL SEPARADOR PUEDE SER UN NUMERO
+###############################################################
+
+if(!($separador.Length -eq 1))
+{
+   Write-Host "El separador de columna es incorrecto."
+    exit
+}
+
+
+#Cargo la matriz en un array bidimensional.
+$archivo = get-content $path_matriz
+#Calculamos cantidad de filas y columnas.
+$fila = $archivo.Split('\n').Length
+$colum = ($archivo.Split($separador).Length/$fila)
+
+#Valido si el separador ingresado corresponde al de la matriz.
+$filaMatriz = $archivo.Split('\n')
+
+if(!$filaMatriz[0].Contains($separador) -and $colum -ne 1)
+    {
+        Write-Host "El separador ingresado no es igual al de la matriz."
+        exit
+    }
+
+
+#Se crea el objeto matriz del tipo entero y se inicializa en 0.
+[int [][]]$matriz = new-object int[][] $fila
+for ($i = 0; $i -lt $matriz.Length; $i++) {
+    $matriz[$i] = new-object int[] $colum
+}
+
+#Se cargan los elementos en la matriz
+$i = 0
+foreach ($registro in $archivo) {
+    $elemento = $registro.split($separador)
+
+for ($j = 0; $j -lt $elemento.Length; $j++) {
+    $matriz[$i][$j] = $elemento[$j].trim()
+}
+$i++
+}
+echo "=========================================="
+#Se evalua si es matriz del tipo fila
+if($fila -eq 1)
+{
+    Write-Host "La matriz es del Tipo Fila"
+}
+#Se evalua si es matriz del tipo columna
+if($colum -eq 1)
+{
+    Write-Host "La matriz es del Tipo Columna"
+}
+#Se evalua si es matriz del tipo rectangular
+if($fila -ne $colum)
+{
+    Write-Host "La matriz es del Tipo Rectangular"
+}
+#Se evalua si es matriz del tipo cuadrada
+if($fila -eq $colum)
+{
+    Write-Host "La matriz es del Tipo Cuadrada"
+}
+
+
+#Se evalua si es matriz del tipo identidad
+#
+if($fila -ne 1 -and $colum -ne 1)
+{
+    $fi=0
+    $co=0
+    $esIdentidad=1
+
+       for($fi = 0 ; $fi -lt $fila ; $fi++)
+          {
+           for($co = 0 ; $co -lt $colum ; $co++)
+               {
+                   if(($fi -ne $co) -and ($matriz[$fi][$co] -ne 0))
+                       {
+                       $esIdentidad = 0;
+                       }
+                   if(($fi -eq $co) -and ($matriz[$fi][$co] -ne 1))
+                      {
+                       $esIdentidad = 0;
+                   }
+               }
+           }
+
+    if($esIdentidad -eq 1)
+        {
+            Write-Host "La matriz es del Tipo Identidad"
+        }
+}
+
+#Se evalua si es matriz del tipo nula
+$fi=0
+$co=0
+$esNula=1
+
+   for($fi = 0 ; $fi -lt $fila ; $fi++)
+      {
+       for($co = 0 ; $co -lt $colum ; $co++)
+           {
+               if(($matriz[$fi][$co] -ne 0))
+                   {
+                   $esNula = 0;
+                   }
+               }
+        }
+
+if($esNula -eq 1)
+    {
+        Write-Host "La matriz es del Tipo Nula"
+    }
+echo "=========================================="
