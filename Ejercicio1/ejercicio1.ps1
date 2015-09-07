@@ -95,8 +95,7 @@ b) Los cambios que le haria son los siguientes:
 # NUESTRAS MODIFICACIONES AL CODIGO ORIGINAL.
 #**************************************************************************************************
 
-Param
-(
+Param (
     [Parameter(Position = 0, Mandatory = $false)]
     [String] $pathsalida = ".",
     
@@ -107,8 +106,7 @@ Param
 
 # Si no existe el path, da un mensaje de error...Sino, entra al if.
 $existe = Test-Path $pathsalida -PathType Container
-if ($existe -ne $true)
-{
+if ($existe -ne $true) {
     Write-Host "El path no existe"
     exit
 }
@@ -117,8 +115,7 @@ if ($existe -ne $true)
 $existe = Test-Path $pathsalida\procesos.txt -PathType Leaf
 
 # Crea un archivo nuevo cada vez que se ejecuta el script, sin borrar peticiones anteriores.
-while($existe -eq $true)  
-{
+while ($existe -eq $true) {
     $num++
     $existe = Test-Path $pathsalida\procesos$num.txt -PathType Leaf
 }
@@ -129,8 +126,7 @@ $pathsalida2="$pathsalida\procesos$num.txt"
 $listaproceso = Get-Process
 
 # Agregariamos la validacion del parametro $cantidad, que el mismo sea mayor o igual a cero.
-if($cantidad -lt 0)
-{
+if ($cantidad -lt 0) {
     Write-Output "La cantidad de procesos ingresada no puede ser negativa!"
     exit
 }
@@ -138,13 +134,11 @@ if($cantidad -lt 0)
 # Nos aseguramos de mostrar a como maximo la cantidad de procesos existentes y no mas de eso.
 $cant = [Math]::Min($cantidad, $listaproceso.count)
 
-foreach ($proceso in $listaproceso)
-{
+foreach ($proceso in $listaproceso) {
     $proceso | Format-List -Property Id,Name >> $pathsalida2
 }
 
-for ($i = 0; $i -lt $cant; $i++)
-{
+for ($i = 0; $i -lt $cant; $i++) {
     Write-Host $listaproceso[$i].Name - $listaproceso[$i].Id
 }
 
