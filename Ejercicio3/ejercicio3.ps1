@@ -42,7 +42,7 @@ Param (
 # Validamos la existencia del archivo de origen.
 $existeArchivo = Test-Path -path $archivo -PathType Leaf
 if ($existeArchivo -eq $true) {
-    
+
     # Construimos la ruta completa del archivo de salida
     # 1 - Nos quedamos con el nombre del archivo de origen.
     # 2 - Unimos el nombre al path destino seleccionado
@@ -53,18 +53,18 @@ if ($existeArchivo -eq $true) {
 
     # Validamos la existencia del archivo de origen.
     $existeDirectorioDeSalida = Test-Path -path $directorioDeSalida -PathType Container
-    
+
     if ($existeDirectorioDeSalida -eq $true) {
-        
+
         # Si el archivo existe, preguntamos si debemos reemplazar.
         if (Test-Path -Path $archivoDeSalida -PathType Leaf) {
-            
+
             # Preguntamos hasta que se ingrese una opción correcta.            
             do {
                 Write-Warning "El archivo destino ya existe. La exportación lo reemplazará."
                 $opcion = Read-Host "Desea Continuar? S/N"
                 $opcion = $opcion.ToUpper()
-                
+
                 switch ($opcion) {
 
                    'S' {
@@ -80,41 +80,44 @@ if ($existeArchivo -eq $true) {
 
             } While ($opcion -ne 'S' -and $opcion -ne 'N')
         }
-        
+
         # Creamos el hash table para almacenar los pares key=Value
         [HasTable] $htRegistro = @{}        
-        
+
         # Leemos el contenido dividiendo el contenido por el record separator de la la consigna.
         $registros = Get-Content $archivo -Delimiter "***"
 
         # Se nos devuelve un solo objeto string por cada separacion, que contiene todos los campos separados por \n.
         foreach($registro in $registros) {
-            
+
             # Limpiamos el hash.
             $htRegistro.Clear()
- 
+
             # Separamos los campos.
             $campos = $registro.Split("`n")
-            
+
             # Agregamos cada campo al registro que va a ser exportado
-            foreach($campo in $campos) {
+            foreach($campo in $campos) {    
 
-                # Evitamos las lineas vacias y con '***'. 
-                if ($campo -notmatch "[*][*][*]" -and $campo -ne [String]::Empty) {                  
+                # Separo el par mediante el '='
+                $nombreCampo, $valor = $campo.split("=")                 
 
-                    # Separo el par mediante el '='
-                    $nombreCampo, $valor = $campo.split("=")             
-   
-                    # Manejamos el error frente a un campo duplicado en el archivo.
-                    # Esta situacion tambien se produce al encontrar lineas vacias.
-                    try {
-                        
-                         # Agrego el par ya separado al registro.
-                         $htRegistro.add($nombreCampo, $valor)
-                    } catch {
-                        # "Error: campo duplicado!" 
-                    }                
-                }
+                # Luego del split las variables pueden quedan en null, en ese caso salteamos el campo.
+                if (($nombreCampo -eq $null) -or ($valor -eq $null)) {
+                    continue
+                } 
+
+                # Quitamos los espacios. 
+                $nombreCampo = $nombreCampo.trim()                    
+                $valor = $valor.trim()
+
+                # Manejamos el error frente a un campo duplicado en el archivo.
+                try {
+                     # Agrego el par ya separado al registro.
+                     $htRegistro.add($nombreCampo, $valor)
+                } catch {
+                    "Error: Se detecto un campo duplicado en el registro!" 
+                }                
             }
 
             # A partir del registro que formamos, creamos el objeto que puede ser exportado.
@@ -123,7 +126,7 @@ if ($existeArchivo -eq $true) {
             # Exportamos al archivo 'backup.csv' en el directorio seleccionado.
             $obj | Export-Csv -Path ($archivoDeSalida) -NoTypeInformation -Force -Append
         }
-       
+
     } else {
         Write-Error ("**** El directorio `"$directorioDeSalida`" no existe no existe. *****")
     }
