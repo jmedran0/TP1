@@ -81,26 +81,40 @@ if ($existeArchivo -eq $true) {
             } While ($opcion -ne 'S' -and $opcion -ne 'N')
         }
         
-        # Leemos el contenido en grupos de 4 lineas, que conforman una fila
-        $registros = Get-Content $archivo -ReadCount 4
-        foreach($registro in $registros) {
+        # Creamos el hash table para almacenar los pares key=Value
+        [HasTable] $htRegistro = @{}        
+        
+        # Leemos el contenido dividiendo el contenido por el record separator de la la consigna.
+        $registros = Get-Content $archivo -Delimiter "***"
 
-            # Creamos el hash table para almacenar los pares key=Value
-            $htRegistro = @{}
+        # Se nos devuelve un solo objeto string por cada separacion, que contiene todos los campos separados por \n.
+        foreach($registro in $registros) {
+            
+            # Limpiamos el hash.
+            $htRegistro.Clear()
+ 
+            # Separamos los campos.
+            $campos = $registro.Split("`n")
             
             # Agregamos cada campo al registro que va a ser exportado
-            foreach($campo in $registro) {
+            foreach($campo in $campos) {
 
-                # Evitamos las lineas vacias y con '***' 
-                if ($campo -notmatch "[*][*][*]" -and $campo -ne "") {                  
-                    
+                # Evitamos las lineas vacias y con '***'. 
+                if ($campo -notmatch "[*][*][*]" -and $campo -ne [String]::Empty) {                  
+
                     # Separo el par mediante el '='
-                    $nombreCampo, $valor = $campo -split "="             
-
-                    # Agrego el par ya separado al registro.
-                    $htRegistro.Add($nombreCampo, $valor)                          
+                    $nombreCampo, $valor = $campo.split("=")             
+   
+                    # Manejamos el error frente a un campo duplicado en el archivo.
+                    # Esta situacion tambien se produce al encontrar lineas vacias.
+                    try {
+                        
+                         # Agrego el par ya separado al registro.
+                         $htRegistro.add($nombreCampo, $valor)
+                    } catch {
+                        # "Error: campo duplicado!" 
+                    }                
                 }
-            
             }
 
             # A partir del registro que formamos, creamos el objeto que puede ser exportado.
