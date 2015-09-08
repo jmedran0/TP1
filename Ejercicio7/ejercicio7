@@ -7,10 +7,11 @@
 #
 # APELLIDOS NOMBRES DNI
 #   ------------------------------------------
-# @integrante1
-# @integrante2
-# @integrante3
-# @integrante4
+#   Gomez Gonzalez Lucas    33.192.211
+#   Medrano Jonatan         33.557.962
+#   Morganella Julian       35.538.469
+#   Ariel Lucki             33.174.462
+#   Bruno                   XXXXXXXXXX
 #
 #**************************************************************************************************
 
@@ -67,23 +68,38 @@ exit
 }
 
 #Valido que el separador de columna sea un solo caracter.
-
-###############################################################
-#     FALTA VALIDAR SI EL SEPARADOR PUEDE SER UN NUMERO
-###############################################################
-
 if(!($separador.Length -eq 1))
 {
    Write-Host "El separador de columna es incorrecto."
     exit
 }
-
-
+#Valido que el separador no sea un numero.
+if($separador -match "[0-9]")
+{
+   Write-Host "El separador de columna es invalido para una matriz flotante."
+    exit
+}
 #Cargo la matriz en un array bidimensional.
 $archivo = get-content $path_matriz
+
+#valido que el separador ingresado sea el correcto
+if(!$archivo.Split('\n')[0].Contains($separador))
+{
+   Write-Host "El separador de columna no se encuentra en la matriz"
+    exit
+}
+
 #Calculamos cantidad de filas y columnas.
 $fila = $archivo.Split('\n').Length
 $colum = ($archivo.Split($separador).Length/$fila)
+
+#valido que la matriz este bien formada
+#en este caso que no tenga un enter de mas (que la ultima fila sea null o vacia)
+if([string]::IsNullOrEmpty($archivo.Split('\n')[$fila-1]))
+    {
+        Write-Host "La matriz esta mal formada. Contiene una fila nula."
+        exit
+    }
 
 #Valido si el separador ingresado corresponde al de la matriz.
 $filaMatriz = $archivo.Split('\n')
@@ -96,9 +112,9 @@ if(!$filaMatriz[0].Contains($separador) -and $colum -ne 1)
 
 
 #Se crea el objeto matriz del tipo entero y se inicializa en 0.
-[int [][]]$matriz = new-object int[][] $fila
+[Single [][]]$matriz = new-object Single[][] $fila
 for ($i = 0; $i -lt $matriz.Length; $i++) {
-    $matriz[$i] = new-object int[] $colum
+    $matriz[$i] = new-object Single[] $colum
 }
 
 #Se cargan los elementos en la matriz
@@ -107,8 +123,17 @@ foreach ($registro in $archivo) {
     $elemento = $registro.split($separador)
 
 for ($j = 0; $j -lt $elemento.Length; $j++) {
-    $matriz[$i][$j] = $elemento[$j].trim()
-}
+    
+        try{
+            if( $elemento[$j].Trim() -ne "" -or $elemento[$j] -ne ""){    # se fija si son solo espacios o si es \n. Ignora y continua con el siguiente.
+            $matriz[$i][$j] = $elemento[$j].trim()
+            } else{
+            continue }
+
+        }  catch {
+            Write-Warning "La matriz contiene un elemento no flotante, `" $elemento[$j] `" en la fila $i, columna $j."
+        }
+    }
 $i++
 }
 echo "=========================================="
